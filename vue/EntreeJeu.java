@@ -26,6 +26,7 @@ public class EntreeJeu extends JFrame
 	private JLabel lblNewLabel ;
 	private JLabel lblNewLabel_1 ;
 	private JLabel lblNewLabel_2 ;
+	private Controle controle ;
 	
 	
 	/*
@@ -53,19 +54,20 @@ public class EntreeJeu extends JFrame
 	* clic sur le bouton Start pour lancer le serveur
 	*/
 	
-	private Controle controle (Controle controle)
-	{
-		
-	}
-	
-	/**
-	* clic sur le bouton Start pour lancer le serveur
-	*/
-	
 	private void btnStart_clic()
 	{
 		System.out.println("Using start button") ;
-		evenementVue(this);
+		controle.evenementVue(this, "server") ;
+	}
+	
+	/**
+	 * clic sur le bouton connect pour se connecter à un server
+	 */
+	
+	private void btnConnect()
+	{
+		System.out.println("Using connect button") ;
+		controle.evenementVue(this, txtIp.getText()) ;
 	}
 	
 	/**
@@ -85,8 +87,7 @@ public class EntreeJeu extends JFrame
 	
 	public EntreeJeu(Controle controle) 
 	{
-		btnStart_clic() ;
-		btnExit_clic() ;
+		this.controle = controle;
 		setTitle("Urban Marginal") ;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE) ;
 		setBounds(100, 100, 450, 190) ;
@@ -95,23 +96,47 @@ public class EntreeJeu extends JFrame
 		setContentPane(contentPane) ;
 		contentPane.setLayout(null) ;
 		
+		//Création bouton start server.
 		JButton btnStart = new JButton("Start") ;
 		btnStart.addMouseListener(new MouseAdapter()
+		{
+			//Liaison avec le clic de la souris.
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				btnStart_clic() ;
+			}
+		});
+		
+		//Création bouton pour se connecter à un server existant.
+		JButton btnConnect = new JButton("Connect") ;
+		btnConnect.addMouseListener(new MouseAdapter()
 		{
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				System.out.println("using start button") ;
+				btnConnect();
 			}
 		});
+		
+		//Création bouton sortit.
+		JButton btnExit = new JButton("Exit") ;
+		btnExit.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				btnExit_clic() ;
+			}
+		});
+		
+		
 		btnStart.setBounds(291, 28, 89, 23) ;
 		contentPane.add(btnStart) ;
 		
-		btnConnect = new JButton("Connect") ;
 		btnConnect.setBounds(291, 78, 89, 23) ;
 		contentPane.add(btnConnect) ;
 		
-		btnExit = new JButton("Exit") ;
 		btnExit.setBounds(291, 112, 89, 23) ;
 		contentPane.add(btnExit) ;
 		

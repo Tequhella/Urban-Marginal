@@ -12,28 +12,26 @@ public class Controle {
 	public static void main(String[] args)
 	{
 		new Controle() ;
-		
 	}
 	
 	//constructeur
 	private Controle()
 	{
-		this.frmEntreeJeu = new EntreeJeu() ; //Création frame dans la mémoire.
-		this.frmEntreeJeu.setVisible(true) ;  //Rend visible la frame.
-		this.frmEntreeJeu = new EntreeJeu(this) ;
+		this.frmEntreeJeu = new EntreeJeu(this) ; //Création frame dans la mémoire.
+		this.frmEntreeJeu.setVisible(true) ;	  //Rend visible la frame.
 	}
 	
 	public void evenementVue (JFrame uneFrame, Object info)
 	{
 		if (uneFrame instanceof EntreeJeu)
 		{
-			evenementEntreeJeu(info);
+			evenementEntreeJeu(info) ;
 		}
 	}
 
 	private void evenementEntreeJeu(Object info)
 	{
-		// TODO Auto-generated method stub
+		System.out.println ((String)info) ;
 		
 	}
 }
