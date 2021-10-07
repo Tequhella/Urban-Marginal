@@ -3,35 +3,48 @@ package controleur;
 import vue.EntreeJeu;
 import javax.swing.JFrame;
 
+import connexion.ClientSocket;
+import connexion.ServeurSocket;
+
 public class Controle {
 	
 	//proprietes
 	private EntreeJeu frmEntreeJeu ;
 	
 	//demarrage appli
-	public static void main(String[] args)
+	public static void main (String[] args)
 	{
-		new Controle() ;
+		new Controle () ;
 	}
 	
 	//constructeur
-	private Controle()
+	private Controle ()
 	{
-		this.frmEntreeJeu = new EntreeJeu(this) ; //Création frame dans la mémoire.
-		this.frmEntreeJeu.setVisible(true) ;	  //Rend visible la frame.
+		this.frmEntreeJeu = new EntreeJeu (this) ; //Création frame dans la mémoire.
+		this.frmEntreeJeu.setVisible (true) ;	  //Rend visible la frame.
 	}
 	
 	public void evenementVue (JFrame uneFrame, Object info)
 	{
 		if (uneFrame instanceof EntreeJeu)
 		{
-			evenementEntreeJeu(info) ;
+			evenementEntreeJeu (info) ;
 		}
 	}
 
-	private void evenementEntreeJeu(Object info)
+	private void evenementEntreeJeu (Object info)
 	{
-		System.out.println ((String)info) ;
+		if ((String)info == "serveur")
+		{
+			new ServeurSocket(this, 6666) ;
+		}
+		else
+		{
+			if (new ClientSocket((String)info, 6666, this).isConnexionOk())
+			{
+				
+			}
+		}
 		
 	}
 }
