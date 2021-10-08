@@ -14,10 +14,13 @@ public class Connection extends Thread
 	/*
 	 * Création des proprietes
 	 */
-	private Object 			   leRecepteur ;
-	private ObjectInputStream  in ;
-	private ObjectOutputStream out;
+	private Object 			   leRecepteur ; // recepeteur
+	private ObjectInputStream  in ; 		 // canal entrant
+	private ObjectOutputStream out; 		 // canal sortant
 	
+	/*
+	 * Création des constructeurs
+	 */
 	public Connection(Socket socket, Object leRecepteur)
 	{
 		this.leRecepteur = leRecepteur;
@@ -76,5 +79,19 @@ public class Connection extends Thread
 				}
 			}
 		}
+	}
+	
+	public void envoi(Object unObjet)
+	{
+		try
+		{
+			out.writeObject(unObjet);
+			out.flush();
+		}
+		catch (IOException e)
+		{
+			System.out.println("erreur avec l'objet d'envoi : "+e);
+		}
+		
 	}
 }

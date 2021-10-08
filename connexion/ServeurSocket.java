@@ -24,14 +24,14 @@ public class ServeurSocket extends Thread
 		}
 		catch (IOException e)
 		{
-			System.out.println ("erreur grave création socket serveur : "+e) ;
+			System.out.println("erreur grave création socket serveur : "+e) ;
 			System.exit(0) ;
 		}
 		
 		this.start() ;
 	}
 	
-	public void run ()
+	public void run()
 	{
 		Socket  socket ;		
 		
@@ -39,14 +39,14 @@ public class ServeurSocket extends Thread
 		{
 			try
 			{
-				System.out.println ("Le serveur attend.") ;
-				socket = serverSocket.accept () ;
-				System.out.println ("Un client s'est connecté.") ;
+				System.out.println("Le serveur attend.") ;
+				socket = serverSocket.accept() ;
+				System.out.println("Un client s'est connecté.") ;
 				new Connection(socket, leRecepteur) ;
 			}
 			catch (IOException e)
 			{
-				System.out.println ("erreur grave création socket serveur : "+e) ;
+				System.out.println("erreur grave création socket serveur : "+e) ;
 				System.exit (0) ;
 			}
 		}
