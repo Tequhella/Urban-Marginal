@@ -19,14 +19,14 @@ public class EntreeJeu extends JFrame
 	/*
 	 * Création des composants de la fenêtre. liste proprietes
 	 */
-	private JPanel contentPane ; // Fenêtre.
-	private JButton btnConnect ; // Bouton Connect.
-	private JButton btnExit ;	 // Bouton Sortie.
-	private JTextField txtIp ;	 // Champ de text pour insérer l'IP.
-	private JLabel lblNewLabel ;
-	private JLabel lblNewLabel_1 ;
-	private JLabel lblNewLabel_2 ;
-	private Controle controle ;
+	private JPanel     contentPane ; // Fenêtre.
+	private JButton    btnConnect ;  // Bouton Connect.
+	private JButton    btnExit ;	 // Bouton Sortie.
+	private JTextField txtIp ;	 	 // Champ de text pour insérer l'IP.
+	private JLabel     lblNewLabel ;
+	private JLabel 	   lblNewLabel_1 ;
+	private JLabel 	   lblNewLabel_2 ;
+	private Controle   controle ;
 	
 	
 	/*

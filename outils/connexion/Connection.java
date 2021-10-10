@@ -1,4 +1,4 @@
-package connexion;
+package outils.connexion;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,6 +46,7 @@ public class Connection extends Thread
 		}
 		
 		this.start();
+		((controleur.Controle)this.leRecepteur).setConnection(this) ;
 	}
 	
 	public void run()
@@ -59,6 +60,7 @@ public class Connection extends Thread
 			try 
 			{
 				reception = in.readObject() ;
+				((controleur.Controle)leRecepteur).receptionInfo(this, reception) ;
 			}
 			catch(ClassNotFoundException e)
 			{

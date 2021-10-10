@@ -5,18 +5,20 @@ import javax.swing.JFrame;
 import vue.Arene;
 import vue.ChoixJoueur;
 import vue.EntreeJeu;
-import connexion.ClientSocket;
-import connexion.ServeurSocket;
+import outils.connexion.ClientSocket;
+import outils.connexion.Connection;
+import outils.connexion.ServeurSocket;
 import modele.Jeu;
 import modele.JeuClient;
 import modele.JeuServeur;
 
-public class Controle {
-	
+public class Controle implements Global
+{
 	//proprietes
 	private EntreeJeu 	frmEntreeJeu ;
 	private Arene	  	frmArene ;
 	private ChoixJoueur frmChoixJoueur ;
+	private Connection  connection ;
 	private Jeu 	  	leJeu ;
 	
 	//demarrage appli
@@ -32,19 +34,33 @@ public class Controle {
 		this.frmEntreeJeu.setVisible(true) ;	  //Rend visible la frame.
 	}
 	
+	/*
+	 * Création méthode evenementVue
+	 */
+	
 	public void evenementVue(JFrame uneFrame, Object info)
 	{
 		if (uneFrame instanceof EntreeJeu)
 		{
 			evenementEntreeJeu(info) ;
 		}
+		
+		if (uneFrame instanceof ChoixJoueur)
+		{
+			System.out.println("Réception info") ;
+			evenementChoixJoueur(info) ;
+		}
 	}
+	
+	/*
+	 * Création méthode evenementEntreeJeu
+	 */
 
 	private void evenementEntreeJeu(Object info)
 	{
 		if ((String)info == "serveur")
 		{
-			new ServeurSocket(this, 6666) ;
+			new ServeurSocket(this, PORT) ;
 			leJeu = new JeuServeur(this) ;
 			frmEntreeJeu.dispose() ;
 			frmArene = new Arene() ;
@@ -52,16 +68,46 @@ public class Controle {
 		}
 		else
 		{
-			if (new ClientSocket((String)info, 6666, this).isConnexionOk())
+			if (new ClientSocket((String)info, PORT, this).isConnexionOk())
 			{
 				leJeu = new JeuClient(this) ;
+				leJeu.setConnection(connection);
 				frmEntreeJeu.dispose() ;
-				frmArene = new Arene() ;
-				frmChoixJoueur = new ChoixJoueur() ;
+				frmChoixJoueur = new ChoixJoueur(this) ;
 				frmChoixJoueur.setVisible(true) ;
-				
-				// frmArene.setVisible(true) ;
 			}
 		}
+		
+		
+	}
+	
+	/*
+	 * Création méthode evenementChoixJoueur
+	 */
+	
+	private void evenementChoixJoueur(Object info)
+	{
+		((modele.JeuClient)leJeu).envoi(info) ;
+		frmChoixJoueur.dispose() ;
+		frmArene = new Arene() ;
+		frmArene.setVisible(true) ;
+	}
+	
+	/*
+	 * Création méthode setConnection
+	 */
+	
+	public void setConnection(Connection connection)
+	{
+		this.connection = connection ;
+	}
+	
+	/*
+	 * Création méthode evenementChoixJoueur
+	 */
+	
+	public void receptionInfo(Connection connection, Object info)
+	{
+		leJeu.reception(connection, info) ;
 	}
 }

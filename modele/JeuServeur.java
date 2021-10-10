@@ -1,6 +1,6 @@
 package modele;
 
-import connexion.Connection;
+import outils.connexion.Connection;
 import controleur.Controle;
 
 public class JeuServeur extends Jeu
@@ -19,8 +19,7 @@ public class JeuServeur extends Jeu
 
 	public void reception(Connection connection, Object info)
 	{
-		// TODO Auto-generated method stub
-		
+		System.out.println(info);
 	}
 
 	public void deconnection(Connection connection)
