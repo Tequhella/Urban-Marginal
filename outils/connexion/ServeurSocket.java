@@ -14,6 +14,7 @@ public class ServeurSocket extends Thread
 	private Object 		 leRecepteur ;
 	private ServerSocket serverSocket ;
 	
+	// constructeur
 	public ServeurSocket(Object leRecepteur, int port)
 	{
 		this.leRecepteur = leRecepteur ;
@@ -31,6 +32,10 @@ public class ServeurSocket extends Thread
 		this.start() ;
 	}
 	
+	/*
+	 * Méthode run permettant d'établir une attente de connection
+	 * d'un ordinateur distant.
+	 */
 	public void run()
 	{
 		Socket  socket ;		

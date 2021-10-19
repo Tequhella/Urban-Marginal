@@ -17,7 +17,7 @@ import java.awt.event.MouseEvent;
 public class EntreeJeu extends JFrame
 {
 	/*
-	 * Création des composants de la fenêtre. liste proprietes
+	 * Création des composants de la fenêtre. Liste proprietes
 	 */
 	private JPanel     contentPane ; // Fenêtre.
 	private JButton    btnConnect ;  // Bouton Connect.

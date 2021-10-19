@@ -8,8 +8,9 @@ import javax.swing.JOptionPane;
 
 public class ClientSocket
 {
-	boolean connexionOk ;
+	boolean connexionOk ; // Vérifie si la connection se fait.
 	
+	// constructeur
 	public ClientSocket(String ip, int port, Object leRecepteur)
 	{
 		connexionOk = false ;
@@ -31,6 +32,7 @@ public class ClientSocket
 		}
 	}
 	
+	// Getter de connexionOk.
 	public boolean isConnexionOk()
 	{
 		return connexionOk;

@@ -24,12 +24,13 @@ import javax.swing.SwingConstants;
 
 public class ChoixJoueur extends JFrame implements Global
 {
-
+	/*
+	 * Liste des propriétés.
+	 */
 	private JPanel 	   contentPane ;
 	private JTextField txtPseudo ;
 	private JLabel     lblPersonnage ;
 	private Controle   controle ;
-	
 	int numPerso = 1;
 
 	/**

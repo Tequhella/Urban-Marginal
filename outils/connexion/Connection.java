@@ -12,15 +12,13 @@ import controleur.Controle;
 public class Connection extends Thread
 {
 	/*
-	 * Création des proprietes
+	 * Liste des proprietes
 	 */
 	private Object 			   leRecepteur ; // recepeteur
 	private ObjectInputStream  in ; 		 // canal entrant
 	private ObjectOutputStream out; 		 // canal sortant
 	
-	/*
-	 * Création des constructeurs
-	 */
+	// constructeur
 	public Connection(Socket socket, Object leRecepteur)
 	{
 		this.leRecepteur = leRecepteur;
@@ -49,6 +47,10 @@ public class Connection extends Thread
 		((controleur.Controle)this.leRecepteur).setConnection(this) ;
 	}
 	
+	/*
+	 * Méthode run permettant de faire une connection entre
+	 * les ordinateurs distants.
+	 */
 	public void run()
 	{
 		Object  reception ;
@@ -83,6 +85,10 @@ public class Connection extends Thread
 		}
 	}
 	
+	
+	/*
+	 * Méthode envoi, permet d'envoyer l'info soit Client, soit Serveur.
+	 */
 	public void envoi(Object unObjet)
 	{
 		try

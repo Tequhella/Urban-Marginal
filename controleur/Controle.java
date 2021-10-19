@@ -1,6 +1,8 @@
 package controleur;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import vue.Arene;
 import vue.ChoixJoueur;
@@ -35,39 +37,44 @@ public class Controle implements Global
 	}
 	
 	/*
-	 * Création méthode evenementVue
+	 * Méthode evenementVue
 	 */
-	
 	public void evenementVue(JFrame uneFrame, Object info)
 	{
 		if (uneFrame instanceof EntreeJeu)
 		{
 			evenementEntreeJeu(info) ;
 		}
-		
-		if (uneFrame instanceof ChoixJoueur)
+		else
 		{
-			System.out.println("Réception info") ;
-			evenementChoixJoueur(info) ;
+			if (uneFrame instanceof ChoixJoueur)
+			{
+				System.out.println("Réception info") ;
+				evenementChoixJoueur(info) ;
+			}
 		}
+		
+			
 	}
 	
 	/*
-	 * Création méthode evenementEntreeJeu
+	 * Méthode evenementEntreeJeu
 	 */
-
 	private void evenementEntreeJeu(Object info)
 	{
+		// côté Serveur
 		if ((String)info == "serveur")
 		{
 			new ServeurSocket(this, PORT) ;
 			leJeu = new JeuServeur(this) ;
 			frmEntreeJeu.dispose() ;
 			frmArene = new Arene() ;
+			((JeuServeur)leJeu).constructionMurs() ;
 			frmArene.setVisible(true) ;
 		}
 		else
 		{
+			// côté Client
 			if (new ClientSocket((String)info, PORT, this).isConnexionOk())
 			{
 				leJeu = new JeuClient(this) ;
@@ -75,6 +82,7 @@ public class Controle implements Global
 				frmEntreeJeu.dispose() ;
 				frmChoixJoueur = new ChoixJoueur(this) ;
 				frmChoixJoueur.setVisible(true) ;
+				frmArene = new Arene() ;
 			}
 		}
 		
@@ -82,32 +90,91 @@ public class Controle implements Global
 	}
 	
 	/*
-	 * Création méthode evenementChoixJoueur
+	 * Méthode evenementChoixJoueur
 	 */
-	
 	private void evenementChoixJoueur(Object info)
 	{
 		((modele.JeuClient)leJeu).envoi(info) ;
 		frmChoixJoueur.dispose() ;
-		frmArene = new Arene() ;
 		frmArene.setVisible(true) ;
 	}
 	
 	/*
-	 * Création méthode setConnection
+	 * Méthode evenementModele, s'occupe de gérer si un évènement
+	 * est côté Serveur ou Client.
 	 */
-	
-	public void setConnection(Connection connection)
+	public void evenementModele(Object unJeu, String ordre, Object info)
 	{
-		this.connection = connection ;
+		// côté Serveur
+		if (unJeu instanceof JeuServeur)
+		{
+			evenementJeuServeur(ordre, info) ;
+		}
+		else
+		{
+			// côté Client
+			if (unJeu instanceof JeuClient)
+			{
+				evenementJeuClient(ordre, info) ;
+			}
+		}
+	}
+	
+	
+	/*
+	 * Méthode evenementJeuServer, s'occupe des évènements côté Client.
+	 */
+	public void evenementJeuServeur(String ordre, Object info)
+	{
+		// Ajout d'un mur dans la frame Arene.
+		if (ordre == "ajout mur")
+		{
+			frmArene.ajoutMur((JLabel)info);
+		}
+		else
+		{
+			// Envoi du panel murs entier côté Client.
+			if (ordre == "envoi panel murs")
+			{
+				((JeuServeur)leJeu).envoi((Connection)info, frmArene.getJpnMurs()) ;
+			}
+		}
 	}
 	
 	/*
-	 * Création méthode evenementChoixJoueur
+	 * Méthode evenementJeuClient, s'occupe des évènements côté Client.
 	 */
+	public void evenementJeuClient(String ordre, Object info)
+	{
+		if (ordre == "envoi panel murs")
+		{
+			System.out.println(info) ;
+			frmArene.ajoutPanelMurs((JPanel) info) ;
+		}
+		
+	}
 	
+	/*
+	 * Méthode setConnection
+	 */
+	public void setConnection(Connection connection)
+	{
+		this.connection = connection ;
+		
+		if (leJeu instanceof JeuServeur)
+		{
+			leJeu.setConnection(connection) ;
+		}
+	}
+	
+	
+	/*
+	 * Méthode receptionInfo
+	 */
 	public void receptionInfo(Connection connection, Object info)
 	{
 		leJeu.reception(connection, info) ;
 	}
+	
+	
 }
