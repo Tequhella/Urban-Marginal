@@ -37,6 +37,13 @@ public class JeuClient extends Jeu
 		{
 			controle.evenementModele(this, "envoi panel murs", info) ;
 		}
+		else
+		{
+			if (info instanceof Label)
+			{
+				controle.evenementModele(this, "ajout joueur", info) ;
+			}
+		}
 	}
 
 	public void deconnection(Connection connection)
@@ -51,7 +58,6 @@ public class JeuClient extends Jeu
 	public void envoi(Object info)
 	{
 		this.connection.envoi(info) ;
-		super.envoi(connection, info) ;
 	}
 	
 }

@@ -110,12 +110,15 @@ public class ChoixJoueur extends JFrame implements Global
 	* survol de la souris sur une zone
 	* changement de forme du curseur : main
 	*/
-	
 	private void souris_doigt()
 	{
 		contentPane.setCursor(new Cursor(Cursor.HAND_CURSOR)) ;
 	}
 	
+	/*
+	 * Méthode affichePerso : permet de charger 
+	 * l'image du personnage dans le cadre.
+	 */
 	private void affichePerso()
 	{
 		lblPersonnage.setIcon (new ImageIcon(CHEMINPERSOS + PERSO + numPerso + MARCHE + 1 + 'd' + DROITE + EXTIMAGE)) ;

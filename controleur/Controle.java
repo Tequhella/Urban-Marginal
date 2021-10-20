@@ -13,6 +13,7 @@ import outils.connexion.ServeurSocket;
 import modele.Jeu;
 import modele.JeuClient;
 import modele.JeuServeur;
+import modele.Label;
 
 public class Controle implements Global
 {
@@ -82,7 +83,6 @@ public class Controle implements Global
 				frmEntreeJeu.dispose() ;
 				frmChoixJoueur = new ChoixJoueur(this) ;
 				frmChoixJoueur.setVisible(true) ;
-				frmArene = new Arene() ;
 			}
 		}
 		
@@ -96,6 +96,7 @@ public class Controle implements Global
 	{
 		((modele.JeuClient)leJeu).envoi(info) ;
 		frmChoixJoueur.dispose() ;
+		frmArene = new Arene() ;
 		frmArene.setVisible(true) ;
 	}
 	
@@ -129,7 +130,7 @@ public class Controle implements Global
 		// Ajout d'un mur dans la frame Arene.
 		if (ordre == "ajout mur")
 		{
-			frmArene.ajoutMur((JLabel)info);
+			frmArene.ajoutMur((JLabel)info) ;
 		}
 		else
 		{
@@ -137,6 +138,13 @@ public class Controle implements Global
 			if (ordre == "envoi panel murs")
 			{
 				((JeuServeur)leJeu).envoi((Connection)info, frmArene.getJpnMurs()) ;
+			}
+			else
+			{
+				if (ordre == "ajout joueur")
+				{
+					frmArene.ajoutJoueur((JLabel)info);
+				}
 			}
 		}
 	}
@@ -148,10 +156,15 @@ public class Controle implements Global
 	{
 		if (ordre == "envoi panel murs")
 		{
-			System.out.println(info) ;
 			frmArene.ajoutPanelMurs((JPanel) info) ;
 		}
-		
+		else
+		{
+			if (ordre == "ajout joueur")
+			{
+				frmArene.ajoutModifJoueur(((Label)info).getNumLabel(), ((Label)info).getJLabel()) ;
+			}
+		}
 	}
 	
 	/*
@@ -173,6 +186,7 @@ public class Controle implements Global
 	 */
 	public void receptionInfo(Connection connection, Object info)
 	{
+		System.out.println(info) ;
 		leJeu.reception(connection, info) ;
 	}
 	

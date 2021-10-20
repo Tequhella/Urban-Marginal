@@ -2,6 +2,7 @@ package vue;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -22,6 +23,7 @@ public class Arene extends JFrame implements Global
 	 */
 	private JPanel contentPane;
 	private JPanel jpnMurs ;
+	private JPanel jpnJeu ;
 	private JTextField txtSaisie;
 	
 	
@@ -48,6 +50,34 @@ public class Arene extends JFrame implements Global
 	}
 	
 	/*
+	 * Méthode ajoutJoueur : permet d'ajouter un joueur dans
+	 * le jPanel de joueur de la fenêtre.
+	 */
+	public void ajoutJoueur(JLabel jLabel)
+	{
+		jpnJeu.add(jLabel) ;
+		jpnJeu.repaint() ;
+	}
+	
+	/*
+	 * Méthode ajoutModifJoueur :
+	 */
+	public void ajoutModifJoueur(int num, JLabel unLabel)
+	{
+		System.out.println(unLabel) ;
+		try
+		{
+			jpnJeu.remove(num) ;
+		}
+		catch (ArrayIndexOutOfBoundsException e)
+		{
+			
+		}
+		jpnJeu.add(unLabel, num) ;
+		jpnJeu.repaint() ;
+	}
+	
+	/*
 	 * Getter getJpnMurs
 	 */
 	public JPanel getJpnMurs() 
@@ -68,7 +98,7 @@ public class Arene extends JFrame implements Global
 		contentPane.setLayout(null) ;
 		setContentPane(contentPane) ;
 		
-		JPanel jpnJeu = new JPanel();
+		jpnJeu = new JPanel();
 		jpnJeu.setBounds(0, 0, L_ARENE, H_ARENE) ;
 		jpnJeu.setLayout(null) ;
 		jpnJeu.setOpaque(false) ;

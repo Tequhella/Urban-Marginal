@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -15,14 +16,22 @@ public class Joueur extends Objet implements Global
 	/*
 	 * Liste des propriétés.
 	 */
-	private String pseudo ;
-	private int    numPerso ;
-	private Label  message ;
+	private String     pseudo ;   	 // pseudo du joueur
+	private int        numPerso ; 	 // numéro du personnage
+	private Label  	   message ;
+	private JeuServeur jeuServeur;
+	private int 	   vie ;		 // vie restante du joueur
+	private int 	   orientation ; // tourné vers la gauche (0) ou vers la droite (1)
+	private int		   etape ;		 // numéro d'étape dans l'animation
 	
 	//constructeur
-	public Joueur ()
+	public Joueur (JeuServeur jeuServeur)
 	{
+		this.jeuServeur = jeuServeur ;
 		
+		vie 		= 10 ;
+		etape 		= 1 ;
+		orientation = DROITE ;
 	}
 	
 	/*
@@ -36,15 +45,20 @@ public class Joueur extends Objet implements Global
 		this.pseudo   = pseudo ;
 		this.numPerso = numPerso ;
 		
-		Label label = new Label(super.label.getNbLabel(), new JLabel()) ;
+		this.label = new Label(Label.getNbLabel(), new JLabel()) ;
+		Label.setNbLabel(Label.getNbLabel() + 1);
+		jeuServeur.nouveauLabelJeu(this.label) ;
+		
 		label.getJLabel().setHorizontalAlignment(SwingConstants.CENTER) ;
 		label.getJLabel().setVerticalAlignment(SwingConstants.CENTER) ;
 		
-		message = new Label(super.label.getNbLabel(), new JLabel()) ;
+		message = new Label(Label.getNbLabel(), new JLabel()) ;
 		message.getJLabel().setHorizontalAlignment(SwingConstants.CENTER) ;
 		message.getJLabel().setFont(new Font("Dialog", Font.PLAIN, 8));
+		jeuServeur.nouveauLabelJeu(message) ;
 		
 		premierePosition(lesJoueurs, lesMurs) ;
+		affiche(MARCHE, etape) ;
 	}
 	
 	/*
@@ -94,6 +108,29 @@ public class Joueur extends Objet implements Global
 		while (toucheJoueur(lesJoueurs)) ;
 	}
 	
+	/*
+	 * 
+	 */
+	private void affiche(String etat, int etape)
+	{
+		this.label.getJLabel().setBounds(this.posX, this.posY, L_PERSO, H_PERSO) ;
+		this.label.getJLabel().setIcon(new ImageIcon(CHEMINPERSOS +
+													 PERSO 		  +
+													 numPerso 	  +
+													 etat 		  +
+													 etape		  +
+													 'd' 		  +
+													 orientation  +
+													 EXTIMAGE)) ;
+		
+		message.getJLabel().setBounds(this.posX - 10,
+									  this.posY + H_PERSO,
+									  L_PERSO + 10,
+									  H_MESSAGE) ;
+		message.getJLabel().setText(pseudo + " : " + vie) ;
+		jeuServeur.envoi(this.label) ;
+		jeuServeur.envoi(message) ;
+	}
 	
 	/*
 	 *  Getter de messages.

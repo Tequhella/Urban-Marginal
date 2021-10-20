@@ -14,8 +14,9 @@ public class JeuServeur extends Jeu implements Global
 	/*
 	 * Liste propriétées
 	 */
-	private ArrayList<Mur> lesMurs 					 = new ArrayList<Mur>() ;
-	private Hashtable<Connection, Joueur> lesJoueurs = new Hashtable<Connection, Joueur>() ;
+	private ArrayList<Mur> lesMurs 					   = new ArrayList<Mur>() ;
+	private Hashtable<Connection, Joueur> lesJoueurs   = new Hashtable<Connection, Joueur>() ;
+	private ArrayList<Joueur> lesJoueursDansLordre = new ArrayList<Joueur>() ;
 	
 	// constructeur
 	public JeuServeur(Controle controle)
@@ -32,7 +33,7 @@ public class JeuServeur extends Jeu implements Global
 	{
 		for (int i = 0; i < NBMURS; i++)
 		{
-			lesMurs.add(new Mur()) ;
+			this.lesMurs.add(new Mur()) ;
 			super.controle.evenementModele(this, "ajout mur", lesMurs.get(i).getLabel().getJLabel()) ;
 		}
 	}
@@ -43,9 +44,7 @@ public class JeuServeur extends Jeu implements Global
 	 */
 	public void setConnection(Connection connection)
 	{
-		lesJoueurs.put(connection, new Joueur()) ;
-		controle.evenementModele(this, "envoi panel murs", connection);
-		
+		this.lesJoueurs.put(connection, new Joueur(this)) ;
 	}
 
 	/*
@@ -58,13 +57,42 @@ public class JeuServeur extends Jeu implements Global
 		
 		switch (Integer.parseInt(infos[0]))
 		{
+			// partie création personnage + envoi
 			case PSEUDO:
-				System.out.println("Pseudo : " + infos[1] + "Perso : " + infos[2]);
-				lesJoueurs.get(connection).initPerso(infos[1],
+				System.out.println("Pseudo : " + infos[1] + ", Perso : " + infos[2]) ;
+				
+				this.controle.evenementModele(this, "envoi panel murs", connection) ;
+				for (Joueur joueur : lesJoueursDansLordre)
+				{
+					super.envoi(connection, joueur.getLabel()) ;
+					super.envoi(connection, joueur.getMessage()) ;
+				}
+				this.lesJoueurs.get(connection).initPerso(infos[1],
 													 Integer.parseInt(infos[2]),
-													 lesJoueurs,
-													 lesMurs);
+													 this.lesJoueurs,
+													 this.lesMurs) ;
+				this.lesJoueursDansLordre.add(this.lesJoueurs.get(connection)) ;
+				
 				break;
+		}
+	}
+	
+	/*
+	 * Méthode nouveauLabelJeu :
+	 */
+	public void nouveauLabelJeu(Label label)
+	{
+		this.controle.evenementModele(this, "ajout joueur", label.getJLabel()) ;
+	}
+	
+	/*
+	 * Méthode envoi.
+	 */
+	public void envoi(Object info)
+	{
+		for (Connection connection : lesJoueurs.keySet())
+		{
+			super.envoi(connection, info) ;
 		}
 	}
 	

@@ -75,7 +75,7 @@ public class Connection extends Thread
 				inOk = false;
 				try
 				{
-					in.close();
+					this.in.close();
 				}
 				catch (IOException e1)
 				{
@@ -89,12 +89,13 @@ public class Connection extends Thread
 	/*
 	 * Méthode envoi, permet d'envoyer l'info soit Client, soit Serveur.
 	 */
-	public void envoi(Object unObjet)
+	public synchronized void envoi(Object unObjet)
 	{
 		try
 		{
-			out.writeObject(unObjet);
-			out.flush();
+			this.out.reset();
+			this.out.writeObject(unObjet);
+			this.out.flush();
 		}
 		catch (IOException e)
 		{

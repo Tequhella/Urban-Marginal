@@ -42,9 +42,9 @@ public class Label implements Serializable
 	/****************************************************
 	 * Création getter pour nbLabel, numLabel et jLabel.*
 	 ****************************************************/
-	public int getNbLabel()
+	public static int getNbLabel()
 	{
-		return this.nbLabel ;
+		return nbLabel ;
 	}
 	
 	public int getNumLabel()
