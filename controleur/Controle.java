@@ -44,18 +44,19 @@ public class Controle implements Global
 	{
 		if (uneFrame instanceof EntreeJeu)
 		{
+			System.out.println("Réception info : EntreeJeu") ;
 			evenementEntreeJeu(info) ;
 		}
-		else
+		else if (uneFrame instanceof ChoixJoueur)
 		{
-			if (uneFrame instanceof ChoixJoueur)
-			{
-				System.out.println("Réception info") ;
-				evenementChoixJoueur(info) ;
-			}
+			System.out.println("Réception info : ChoixJoueur") ;
+			evenementChoixJoueur(info) ;
 		}
-		
-			
+		else if (uneFrame instanceof Arene)
+		{
+			System.out.println("Réception info : Arene") ;
+			evenementArene(info) ;
+		}
 	}
 	
 	/*
@@ -67,25 +68,25 @@ public class Controle implements Global
 		if ((String)info == "serveur")
 		{
 			new ServeurSocket(this, PORT) ;
-			leJeu = new JeuServeur(this) ;
-			frmEntreeJeu.dispose() ;
-			frmArene = new Arene() ;
+			this.leJeu = new JeuServeur(this) ;
+			this.frmEntreeJeu.dispose() ;
+			this.frmArene = new Arene("serveur", this) ;
 			((JeuServeur)leJeu).constructionMurs() ;
-			frmArene.setVisible(true) ;
+			this.frmArene.setVisible(true) ;
 		}
+		// côté Client
 		else
 		{
-			// côté Client
 			if (new ClientSocket((String)info, PORT, this).isConnexionOk())
 			{
-				leJeu = new JeuClient(this) ;
-				leJeu.setConnection(connection);
-				frmEntreeJeu.dispose() ;
-				frmChoixJoueur = new ChoixJoueur(this) ;
-				frmChoixJoueur.setVisible(true) ;
+				this.leJeu = new JeuClient(this) ;
+				this.leJeu.setConnection(connection);
+				this.frmEntreeJeu.dispose() ;
+				this.frmArene = new Arene("client", this) ;
+				this.frmChoixJoueur = new ChoixJoueur(this) ;
+				this.frmChoixJoueur.setVisible(true) ;
 			}
 		}
-		
 		
 	}
 	
@@ -94,77 +95,78 @@ public class Controle implements Global
 	 */
 	private void evenementChoixJoueur(Object info)
 	{
-		((modele.JeuClient)leJeu).envoi(info) ;
+		((JeuClient)leJeu).envoi(info) ;
 		frmChoixJoueur.dispose() ;
-		frmArene = new Arene() ;
 		frmArene.setVisible(true) ;
 	}
 	
 	/*
-	 * Méthode evenementModele, s'occupe de gérer si un évènement
+	 * Méthode evenementModele : s'occupe de gérer si un évènement
 	 * est côté Serveur ou Client.
 	 */
 	public void evenementModele(Object unJeu, String ordre, Object info)
 	{
 		// côté Serveur
-		if (unJeu instanceof JeuServeur)
-		{
-			evenementJeuServeur(ordre, info) ;
-		}
-		else
-		{
-			// côté Client
-			if (unJeu instanceof JeuClient)
-			{
-				evenementJeuClient(ordre, info) ;
-			}
-		}
+		if (unJeu instanceof JeuServeur) /*--->*/ evenementJeuServeur(ordre, info) ;
+		
+		// côté client
+		else if (unJeu instanceof JeuClient) /*--->*/ evenementJeuClient(ordre, info) ;
 	}
 	
 	
 	/*
-	 * Méthode evenementJeuServer, s'occupe des évènements côté Client.
+	 * Méthode evenementJeuServer : s'occupe des évènements côté Client.
 	 */
 	public void evenementJeuServeur(String ordre, Object info)
 	{
+		System.out.println("Ordre : " + ordre) ;
+		
 		// Ajout d'un mur dans la frame Arene.
-		if (ordre == "ajout mur")
+		if (ordre.equals("ajout mur")) /*--->*/	frmArene.ajoutMur((JLabel)info) ;
+		
+		// Envoi du panel murs entier côté Client.
+		else if (ordre.equals("envoi panel murs")) /*--->*/ ((JeuServeur)leJeu).envoi
+															(
+																(Connection)info,
+																frmArene.getJpnMurs()
+															) ;
+		
+		// Ajout d'un joueur dans la frame Arene.
+		else if (ordre.equals("ajout joueur")) /*--->*/ frmArene.ajoutJoueur((JLabel)info);
+		
+		// Ajout d'une phrase dans le chat.
+		else if (ordre.equals("ajout phrase"))
 		{
-			frmArene.ajoutMur((JLabel)info) ;
+			frmArene.ajoutChat((String)info) ;
+			((JeuServeur)leJeu).envoi(frmArene.getTxtChat()) ;
 		}
-		else
-		{
-			// Envoi du panel murs entier côté Client.
-			if (ordre == "envoi panel murs")
-			{
-				((JeuServeur)leJeu).envoi((Connection)info, frmArene.getJpnMurs()) ;
-			}
-			else
-			{
-				if (ordre == "ajout joueur")
-				{
-					frmArene.ajoutJoueur((JLabel)info);
-				}
-			}
-		}
+			
 	}
 	
 	/*
-	 * Méthode evenementJeuClient, s'occupe des évènements côté Client.
+	 * Méthode evenementJeuClient : s'occupe des évènements côté Client.
 	 */
 	public void evenementJeuClient(String ordre, Object info)
 	{
-		if (ordre == "envoi panel murs")
-		{
-			frmArene.ajoutPanelMurs((JPanel) info) ;
-		}
-		else
-		{
-			if (ordre == "ajout joueur")
-			{
-				frmArene.ajoutModifJoueur(((Label)info).getNumLabel(), ((Label)info).getJLabel()) ;
-			}
-		}
+		// Envoi du panel murs dans la frame Arene.
+		if (ordre.equals("envoi panel murs")) /*--->*/ frmArene.ajoutPanelMurs((JPanel) info) ;
+		
+		// Ajout d'un joueur dans la frame Arene.
+		else if (ordre.equals("ajout joueur")) /*--->*/ frmArene.ajoutModifJoueur
+														(
+															((Label)info).getNumLabel(),
+															((Label)info).getJLabel()
+														) ;
+		// Remplacement chat.
+		else if (ordre.equals("remplace chat")) /*--->*/ frmArene.remplaceChat((String)info) ;
+	}
+	
+	/*
+	 * Méthode evenementArene : s'occupe des évènements de l'Arene.
+	 */
+	private void evenementArene(Object info)
+	{
+		((JeuClient)leJeu).envoi(info) ;
 	}
 	
 	/*
@@ -174,10 +176,7 @@ public class Controle implements Global
 	{
 		this.connection = connection ;
 		
-		if (leJeu instanceof JeuServeur)
-		{
-			leJeu.setConnection(connection) ;
-		}
+		if (leJeu instanceof JeuServeur) /*--->*/ leJeu.setConnection(connection) ;
 	}
 	
 	
@@ -186,7 +185,6 @@ public class Controle implements Global
 	 */
 	public void receptionInfo(Connection connection, Object info)
 	{
-		System.out.println(info) ;
 		leJeu.reception(connection, info) ;
 	}
 	

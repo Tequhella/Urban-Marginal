@@ -1,30 +1,39 @@
 package vue;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.io.IOException;
+import java.awt.BorderLayout ;
+import java.awt.EventQueue ;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.awt.event.KeyAdapter ;
+import java.awt.event.KeyEvent ;
+import java.io.IOException ;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import javax.swing.ImageIcon ;
+import javax.swing.JButton ;
+import javax.swing.JFrame ;
+import javax.swing.JPanel ;
+import javax.swing.border.EmptyBorder ;
 
-import controleur.Global;
+import controleur.Controle;
+import controleur.Global ;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JLabel ;
+import javax.swing.JTextField ;
+import javax.swing.JScrollPane ;
+import javax.swing.JTextArea ;
 
 public class Arene extends JFrame implements Global
 {
 	/*
 	 * Liste propriétés.
 	 */
-	private JPanel contentPane;
-	private JPanel jpnMurs ;
-	private JPanel jpnJeu ;
-	private JTextField txtSaisie;
+	private Controle   controle ;
+	private JPanel 	   contentPane ;
+	private JPanel 	   jpnMurs ;
+	private JPanel 	   jpnJeu ;
+	private JTextField txtSaisie ;
+	private JTextArea  txtChat ;
+	private boolean    client ;
 	
 	
 	/*
@@ -84,12 +93,55 @@ public class Arene extends JFrame implements Global
 	{
 		return jpnMurs;
 	}
-
+	
+	/*
+	 * Méthode txtSaisie_keyPressed : permet d'envoyer le message tapé.
+	 */
+	private void txtSaisie_keyPressed(KeyEvent e)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_ENTER)
+		{
+			if (txtSaisie.getText().equals(null) == false)
+			{
+				controle.evenementVue(this, CHAT + SEPARE + txtSaisie.getText()) ;
+				txtSaisie.setText(null) ;
+				contentPane.requestFocus() ;
+			}
+		}
+	}
+	
+	/*
+	 * Méthode ajoutChat : ajoute une phrase dans txtChat.
+	 */
+	public void ajoutChat(String unePhrase)
+	{
+		txtChat.setText(unePhrase + "\r\n" + txtChat.getText()) ;
+	}
+	
+	/*
+	 * Méthode remplaceChat.
+	 */
+	public void remplaceChat(String str)
+	{
+		txtChat.setText(str) ;
+	}
+	
+	/*
+	 * Getter txtChat.
+	 */
+	public String getTxtChat()
+	{
+		return txtChat.getText() ;
+	}
+	
 	/**
 	 * Create the frame.
 	 */
-	public Arene()
+	public Arene(String typeJeu, Controle controle)
 	{
+		this.controle = controle ;
+		client = (typeJeu.equals("client")) ? true: false ;
+		
 		setTitle("Arene") ;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE) ;
 		setBounds(100, 100, L_ARENE + 3 * MARGE, H_ARENE + H_CHAT) ;
@@ -115,17 +167,29 @@ public class Arene extends JFrame implements Global
 		lblFond.setIcon(new ImageIcon(FONDARENE)) ;
 		contentPane.add(lblFond) ;
 		
-		txtSaisie = new JTextField() ;
-		txtSaisie.setBounds(0, H_ARENE, L_ARENE, H_SAISIE) ;
-		contentPane.add(txtSaisie) ;
-		txtSaisie.setColumns(10) ;
+		if (client == true)
+		{
+			txtSaisie = new JTextField() ;
+			txtSaisie.setBounds(0, H_ARENE, L_ARENE, H_SAISIE) ;
+			contentPane.add(txtSaisie) ;
+			txtSaisie.setColumns(10) ;
+			
+			txtSaisie.addKeyListener(new KeyAdapter()
+			{
+				@Override
+				public void keyPressed(KeyEvent e)
+				{
+					txtSaisie_keyPressed(e);
+				}
+			});
+		}
 		
 		JScrollPane jspChat = new JScrollPane() ;
 		jspChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		jspChat.setBounds(0, H_ARENE + H_SAISIE, L_ARENE, H_CHAT - H_SAISIE - 7 * MARGE) ;
 		contentPane.add(jspChat) ;
 		
-		JTextArea txtChat = new JTextArea() ;
+		txtChat = new JTextArea() ;
 		jspChat.setViewportView(txtChat) ;
 	}
 

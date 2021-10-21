@@ -33,17 +33,28 @@ public class JeuClient extends Jeu
 	 */
 	public void reception(Connection connection, Object info)
 	{
-		if (info instanceof JPanel)
-		{
-			controle.evenementModele(this, "envoi panel murs", info) ;
-		}
-		else
-		{
-			if (info instanceof Label)
-			{
-				controle.evenementModele(this, "ajout joueur", info) ;
-			}
-		}
+		// Reception info JPanel.
+		if (info instanceof JPanel) /*--->*/ controle.evenementModele
+											 (
+												 this,
+												 "envoi panel murs",
+												 info
+											 ) ;
+		// Reception info Label.
+		else if (info instanceof Label) /*--->*/ controle.evenementModele
+												 (
+													 this,
+													 "ajout joueur", 
+													 info
+												 ) ;
+		// Reception info String.
+		else if (info instanceof String) /*--->*/ controle.evenementModele
+												  (
+													  this,
+													  "remplace chat",
+													  info
+												  );
+		
 	}
 
 	public void deconnection(Connection connection)

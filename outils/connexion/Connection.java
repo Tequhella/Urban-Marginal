@@ -62,7 +62,7 @@ public class Connection extends Thread
 			try 
 			{
 				reception = in.readObject() ;
-				((controleur.Controle)leRecepteur).receptionInfo(this, reception) ;
+				((controleur.Controle)this.leRecepteur).receptionInfo(this, reception) ;
 			}
 			catch(ClassNotFoundException e)
 			{
@@ -75,7 +75,7 @@ public class Connection extends Thread
 				inOk = false;
 				try
 				{
-					this.in.close();
+					in.close() ;
 				}
 				catch (IOException e1)
 				{
@@ -93,9 +93,9 @@ public class Connection extends Thread
 	{
 		try
 		{
-			this.out.reset();
-			this.out.writeObject(unObjet);
-			this.out.flush();
+			this.out.reset() ;
+			out.writeObject(unObjet) ;
+			out.flush() ;
 		}
 		catch (IOException e)
 		{

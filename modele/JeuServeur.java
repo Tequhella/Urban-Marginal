@@ -14,9 +14,9 @@ public class JeuServeur extends Jeu implements Global
 	/*
 	 * Liste propriétées
 	 */
-	private ArrayList<Mur> lesMurs 					   = new ArrayList<Mur>() ;
-	private Hashtable<Connection, Joueur> lesJoueurs   = new Hashtable<Connection, Joueur>() ;
-	private ArrayList<Joueur> lesJoueursDansLordre = new ArrayList<Joueur>() ;
+	private ArrayList<Mur> lesMurs 					 = new ArrayList<Mur>() ;
+	private Hashtable<Connection, Joueur> lesJoueurs = new Hashtable<Connection, Joueur>() ;
+	private ArrayList<Joueur> lesJoueursDansLordre 	 = new ArrayList<Joueur>() ;
 	
 	// constructeur
 	public JeuServeur(Controle controle)
@@ -67,13 +67,19 @@ public class JeuServeur extends Jeu implements Global
 					super.envoi(connection, joueur.getLabel()) ;
 					super.envoi(connection, joueur.getMessage()) ;
 				}
-				this.lesJoueurs.get(connection).initPerso(infos[1],
+				lesJoueurs.get(connection).initPerso(infos[1],
 													 Integer.parseInt(infos[2]),
-													 this.lesJoueurs,
-													 this.lesMurs) ;
-				this.lesJoueursDansLordre.add(this.lesJoueurs.get(connection)) ;
+													 lesJoueurs,
+													 lesMurs) ;
+				lesJoueursDansLordre.add(lesJoueurs.get(connection)) ;
+				
+				String laPhrase = "*** " + infos[1] + " vient de se connecter ***" ;
+				controle.evenementModele(this, "ajout phrase", laPhrase) ;
 				
 				break;
+			case CHAT:
+				laPhrase = lesJoueurs.get(connection).getPseudo() + ">" + infos[1] ;
+				controle.evenementModele(this, "ajout phrase", laPhrase) ;
 		}
 	}
 	

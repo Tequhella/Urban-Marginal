@@ -133,10 +133,15 @@ public class Joueur extends Objet implements Global
 	}
 	
 	/*
-	 *  Getter de messages.
+	 *  Getter de messages et pseudo.
 	 */
 	public Label getMessage()
 	{
-		return message;
+		return message ;
+	}
+	
+	public String getPseudo()
+	{
+		return pseudo ;
 	}
 }
