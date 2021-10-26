@@ -94,9 +94,15 @@ public class Arene extends JFrame implements Global
 		return jpnMurs;
 	}
 	
-	/*
-	 * Méthode txtSaisie_keyPressed : permet d'envoyer le message tapé.
-	 */
+	
+	/*********************
+	 * Méthode Evènement *
+	 ********************/
+	
+		/*
+		 * Méthode txtSaisie_keyPressed : permet d'envoyer le message tapé.
+		 */
+	 
 	private void txtSaisie_keyPressed(KeyEvent e)
 	{
 		if (e.getKeyCode() == KeyEvent.VK_ENTER)
@@ -107,6 +113,30 @@ public class Arene extends JFrame implements Global
 				txtSaisie.setText(null) ;
 				contentPane.requestFocus() ;
 			}
+		}
+	}
+	
+		/*
+		 * Méthode contentPane_keyPressed : s'occupe de tester le type de touche
+		 * et l'envoi au serveur.
+		 */
+	
+	private void contentPane_keyPressed(KeyEvent e)
+	{
+		int valeur = -1 ;
+		
+		switch (e.getKeyCode())
+		{
+			case KeyEvent.VK_SPACE: valeur = TIRE	; break ;
+			case KeyEvent.VK_LEFT : valeur = GAUCHE ; break ;
+			case KeyEvent.VK_RIGHT: valeur = DROITE ; break ;
+			case KeyEvent.VK_DOWN : valeur = BAS  	; break ;
+			case KeyEvent.VK_UP	  : valeur = HAUT 	; break ;
+		}
+		
+		if (valeur != -1)
+		{
+			controle.evenementVue(this, ACTION + SEPARE + valeur) ;
 		}
 	}
 	
@@ -140,7 +170,7 @@ public class Arene extends JFrame implements Global
 	public Arene(String typeJeu, Controle controle)
 	{
 		this.controle = controle ;
-		client = (typeJeu.equals("client")) ? true: false ;
+		client = (typeJeu.equals("client")) ;
 		
 		setTitle("Arene") ;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE) ;
@@ -149,6 +179,19 @@ public class Arene extends JFrame implements Global
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5)) ;
 		contentPane.setLayout(null) ;
 		setContentPane(contentPane) ;
+		
+		if (client == true)
+		{
+			contentPane.addKeyListener(new KeyAdapter()
+			{
+				@Override
+				public void keyPressed(KeyEvent e)
+				{
+					contentPane_keyPressed(e);
+				}
+			});
+		}
+		
 		
 		jpnJeu = new JPanel();
 		jpnJeu.setBounds(0, 0, L_ARENE, H_ARENE) ;
@@ -181,7 +224,7 @@ public class Arene extends JFrame implements Global
 				{
 					txtSaisie_keyPressed(e);
 				}
-			});
+			}) ;
 		}
 		
 		JScrollPane jspChat = new JScrollPane() ;

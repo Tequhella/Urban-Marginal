@@ -59,8 +59,6 @@ public class JeuServeur extends Jeu implements Global
 		{
 			// partie création personnage + envoi
 			case PSEUDO:
-				System.out.println("Pseudo : " + infos[1] + ", Perso : " + infos[2]) ;
-				
 				this.controle.evenementModele(this, "envoi panel murs", connection) ;
 				for (Joueur joueur : lesJoueursDansLordre)
 				{
@@ -80,6 +78,12 @@ public class JeuServeur extends Jeu implements Global
 			case CHAT:
 				laPhrase = lesJoueurs.get(connection).getPseudo() + ">" + infos[1] ;
 				controle.evenementModele(this, "ajout phrase", laPhrase) ;
+				
+				break;
+			case ACTION:
+				lesJoueurs.get(connection).action(Integer.parseInt(infos[1]), lesJoueurs, lesMurs) ;
+				
+				break;
 		}
 	}
 	

@@ -15,9 +15,15 @@ public interface Global
 	public static final int
 		GAUCHE 			= 0,
 		DROITE 			= 1,
+		HAUT			= 2,
+		BAS				= 3,
+		TIRE			= 4,
+		ACTION			= 2,
 		NBPERSOS 		= 3,
 		H_PERSO 		= 44,
 		L_PERSO 		= 39,
+		NBETATSMARCHE	= 4,
+		LEPAS			= 10,
 		PSEUDO			= 0 ;
 	
 	// partie mur

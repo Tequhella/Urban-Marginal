@@ -37,10 +37,13 @@ public class Joueur extends Objet implements Global
 	/*
 	 * Méthode initPerso : s'occupe d'initialiser les paramètres d'un personnage.
 	 */
-	public void initPerso(String pseudo,
-						  int numPerso,
-						  Hashtable<Connection, Joueur> lesJoueurs,
-						  ArrayList<Mur> lesMurs)
+	public void initPerso
+	(
+			String pseudo,
+			int numPerso,
+			Hashtable<Connection, Joueur> lesJoueurs,
+			ArrayList<Mur> lesMurs
+	)
 	{
 		this.pseudo   = pseudo ;
 		this.numPerso = numPerso ;
@@ -95,8 +98,11 @@ public class Joueur extends Objet implements Global
 	 * Méthode premierePosition : place le joueur aléatoirement,
 	 * s'il y a une collision, le joueur est déplacé.
 	 */
-	private void premierePosition(Hashtable<Connection, Joueur> lesJoueurs,
-								  ArrayList<Mur> lesMurs)
+	private void premierePosition
+	(
+			Hashtable<Connection, Joueur> lesJoueurs,
+			ArrayList<Mur> lesMurs
+	)
 	{
 		this.label.getJLabel().setBounds(0, 0, L_PERSO, H_PERSO) ;
 		
@@ -105,7 +111,7 @@ public class Joueur extends Objet implements Global
 			this.posX = (int)Math.round(Math.random() * L_ARENE - L_PERSO) ;
 			this.posY = (int)Math.round(Math.random() * H_ARENE - H_PERSO - H_MESSAGE) ;
 		}
-		while (toucheJoueur(lesJoueurs)) ;
+		while (toucheJoueur(lesJoueurs) && toucheMur(lesMurs)) ;
 	}
 	
 	/*
@@ -114,22 +120,128 @@ public class Joueur extends Objet implements Global
 	private void affiche(String etat, int etape)
 	{
 		this.label.getJLabel().setBounds(this.posX, this.posY, L_PERSO, H_PERSO) ;
-		this.label.getJLabel().setIcon(new ImageIcon(CHEMINPERSOS +
-													 PERSO 		  +
-													 numPerso 	  +
-													 etat 		  +
-													 etape		  +
-													 'd' 		  +
-													 orientation  +
-													 EXTIMAGE)) ;
+		this.label.getJLabel().setIcon(new ImageIcon
+									  (
+											  CHEMINPERSOS +
+											  PERSO 		  +
+											  numPerso 	  +
+											  etat 		  +
+											  etape		  +
+											  'd' 		  +
+											  orientation  +
+											  EXTIMAGE
+									  )) ;
 		
-		message.getJLabel().setBounds(this.posX - 10,
-									  this.posY + H_PERSO,
-									  L_PERSO + 10,
-									  H_MESSAGE) ;
+		message.getJLabel().setBounds
+		(
+				this.posX - 10,
+				this.posY + H_PERSO,
+				L_PERSO + 10,
+				H_MESSAGE
+		) ;
 		message.getJLabel().setText(pseudo + " : " + vie) ;
 		jeuServeur.envoi(this.label) ;
 		jeuServeur.envoi(message) ;
+	}
+	
+	/*
+	 * Méthode deplace : s'occupe des déplacements.
+	 */
+	
+	private int deplace
+	(
+			int action, 	 // pour connaître l'action sollicitée (gauche, droite…)
+			int position,	 // pour la position de départ
+			int orientation, // pour l'orientation de départ
+			int lepas,		 // pour la valeur du déplacement (en positif ou négatif)
+			int max,		 // pour la valeur à ne pas dépasser
+			Hashtable<Connection, Joueur> lesJoueurs, // le dictionnaire de joueurs
+			ArrayList<Mur> lesMurs 					  // la collection de murs
+	)
+	{
+		this.orientation = orientation ;
+		int ancpos 		 = position ;
+		position += lepas ;
+		
+		if (position < 0) /*----->*/ position = 0 ;
+		if (position > max) /*--->*/ position = max ;
+		
+		if (action == GAUCHE || action == DROITE) /*--->*/ this.posX = position ;
+		else /*---------------------------------------->*/ this.posY = position ;
+		
+		if (toucheJoueur(lesJoueurs) && toucheMur(lesMurs)) /*--->*/ position = ancpos ;
+		
+		// etape = (etape == NBETATSMARCHE) etape -= 3 : etape++ ;
+		if (etape == NBETATSMARCHE) /*--->*/ etape -= 3 ;
+		else /*-------------------------->*/ etape++ ;
+
+		return position ;
+	}
+	
+	/*
+	 * Méthode action :
+	 */
+	
+	public void action
+	(
+			int action,
+			Hashtable<Connection, Joueur> lesJoueurs,
+			ArrayList<Mur> lesMurs
+	)
+	{
+		switch (action)
+		{
+			case GAUCHE: 
+				 this.posX = deplace 
+				 		(
+				 				action,
+				 				this.posX,
+				 				GAUCHE,
+				 				-LEPAS,
+				 				L_ARENE - L_PERSO,
+				 				lesJoueurs,
+				 				lesMurs
+		 				) ;
+				break ;
+			case DROITE: 
+				this.posX = deplace 
+		 		(
+		 				action,
+		 				this.posX,
+		 				DROITE,
+		 				LEPAS,
+		 				L_ARENE - L_PERSO,
+		 				lesJoueurs,
+		 				lesMurs
+ 				) ;
+				break ;
+			case HAUT: 
+				this.posY = deplace 
+		 		(
+		 				action,
+		 				this.posY,
+		 				orientation,
+		 				-LEPAS,
+		 				H_ARENE - H_PERSO - H_MESSAGE,
+		 				lesJoueurs,
+		 				lesMurs
+ 				) ;
+				break ;
+			case BAS : 
+				this.posY = deplace 
+		 		(
+		 				action,
+		 				this.posY,
+		 				orientation,
+		 				LEPAS,
+		 				H_ARENE - H_PERSO - H_MESSAGE,
+		 				lesJoueurs,
+		 				lesMurs
+ 				) ;
+				break ;
+		}
+		
+		affiche(MARCHE, etape) ;
 	}
 	
 	/*
