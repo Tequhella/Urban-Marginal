@@ -64,6 +64,7 @@ public class JeuServeur extends Jeu implements Global
 				{
 					super.envoi(connection, joueur.getLabel()) ;
 					super.envoi(connection, joueur.getMessage()) ;
+					super.envoi(connection, joueur.getBoule().getLabel()) ;
 				}
 				lesJoueurs.get(connection).initPerso(infos[1],
 													 Integer.parseInt(infos[2]),

@@ -23,6 +23,7 @@ public class Joueur extends Objet implements Global
 	private int 	   vie ;		 // vie restante du joueur
 	private int 	   orientation ; // tourné vers la gauche (0) ou vers la droite (1)
 	private int		   etape ;		 // numéro d'étape dans l'animation
+	private Boule	   boule ;
 	
 	//constructeur
 	public Joueur (JeuServeur jeuServeur)
@@ -62,6 +63,9 @@ public class Joueur extends Objet implements Global
 		
 		premierePosition(lesJoueurs, lesMurs) ;
 		affiche(MARCHE, etape) ;
+		
+		boule = new Boule(jeuServeur) ;
+		jeuServeur.envoi(boule.getLabel()) ;
 	}
 	
 	/*
@@ -111,11 +115,12 @@ public class Joueur extends Objet implements Global
 			this.posX = (int)Math.round(Math.random() * L_ARENE - L_PERSO) ;
 			this.posY = (int)Math.round(Math.random() * H_ARENE - H_PERSO - H_MESSAGE) ;
 		}
-		while (toucheJoueur(lesJoueurs) && toucheMur(lesMurs)) ;
+		while (toucheJoueur(lesJoueurs) || toucheMur(lesMurs)) ;
 	}
 	
 	/*
-	 * 
+	 * Méthode affiche : s'occupe de charger les joueurs
+	 * selon leur état.
 	 */
 	private void affiche(String etat, int etape)
 	{
@@ -169,7 +174,7 @@ public class Joueur extends Objet implements Global
 		if (action == GAUCHE || action == DROITE) /*--->*/ this.posX = position ;
 		else /*---------------------------------------->*/ this.posY = position ;
 		
-		if (toucheJoueur(lesJoueurs) && toucheMur(lesMurs)) /*--->*/ position = ancpos ;
+		if (toucheJoueur(lesJoueurs) || toucheMur(lesMurs)) /*--->*/ position = ancpos ;
 		
 		// etape = (etape == NBETATSMARCHE) etape -= 3 : etape++ ;
 		if (etape == NBETATSMARCHE) /*--->*/ etape -= 3 ;
@@ -179,7 +184,7 @@ public class Joueur extends Objet implements Global
 	}
 	
 	/*
-	 * Méthode action :
+	 * Méthode action : gère le choix des actions.
 	 */
 	
 	public void action
@@ -239,14 +244,17 @@ public class Joueur extends Objet implements Global
 		 				lesMurs
  				) ;
 				break ;
+			case TIRE:
+				boule.tireBoule(this) ;
+				break ;
 		}
 		
 		affiche(MARCHE, etape) ;
 	}
 	
-	/*
-	 *  Getter de messages et pseudo.
-	 */
+	/*****************************************
+	 *  Getter de messages, pseudo et boule. *
+	 ****************************************/
 	public Label getMessage()
 	{
 		return message ;
@@ -255,5 +263,15 @@ public class Joueur extends Objet implements Global
 	public String getPseudo()
 	{
 		return pseudo ;
+	}
+	
+	public Boule getBoule()
+	{
+		return boule ;
+	}
+	
+	public int getOrientation()
+	{
+		return orientation ;
 	}
 }

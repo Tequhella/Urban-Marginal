@@ -38,6 +38,11 @@ public interface Global
 		H_ARENE			= 600,
 		L_ARENE			= 800 ;
 	
+	// partie boule
+	public static final int
+		L_BOULE 		= 17,
+		H_BOULE			= 17 ;
+	
 	// partie chat
 	public static final int
 		CHAT			= 1,
@@ -58,6 +63,8 @@ public interface Global
 		FONDARENE		= CHEMINFONDS + "fondarene.jpg",		// "media//fonds//fondarene.jpg"
 		CHEMINMURS		= CHEMIN + "murs" + SEPARATOR,			// "media//murs//"
 		MUR				= CHEMINMURS + "mur.gif",				// "media//murs//mur.gif"
+		CHEMINBOULES	= CHEMIN + "boules" + SEPARATOR,		// "media//boules//"
+		BOULE			= CHEMINBOULES + "boule.gif",			// "media//boules//boule.gif"
 		PERSO			= "perso",
 		EXTIMAGE 		= ".gif",
 		MARCHE 			= "marche",
